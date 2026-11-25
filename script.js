@@ -147,27 +147,59 @@
     revealItems.forEach(item => item.classList.add('is-visible'));
   }
 
-  // Project filtering
+  // Project filters and search work together, so filtering never resets the search unexpectedly.
   const filterButtons = $$('.filter-button');
   const projectCards = $$('.project-card[data-category]');
+  const projectSearch = $('#project-search');
+  const projectResults = $('#project-results');
+  const projectEmpty = $('#projects-empty');
+  let activeProjectFilter = 'all';
+
+  function applyProjectFilters() {
+    const query = (projectSearch?.value || '').trim().toLocaleLowerCase();
+    let visibleCount = 0;
+    projectCards.forEach(card => {
+      const matchesCategory = activeProjectFilter === 'all' || card.dataset.category === activeProjectFilter;
+      const searchableText = `${card.textContent || ''} ${card.dataset.project || ''}`.toLocaleLowerCase();
+      const matchesSearch = !query || searchableText.includes(query);
+      const show = matchesCategory && matchesSearch;
+      card.hidden = !show;
+      if (show) {
+        visibleCount += 1;
+        if (!prefersReducedMotion) {
+          card.classList.remove('is-visible');
+          requestAnimationFrame(() => card.classList.add('is-visible'));
+        } else {
+          card.classList.add('is-visible');
+        }
+      }
+    });
+    if (projectResults) {
+      const categoryLabel = activeProjectFilter === 'all' ? 'all categories' : (activeProjectFilter === 'ai' ? 'AI / ML' : 'web apps');
+      const liveDot = document.createElement('span');
+      liveDot.className = 'tiny-live';
+      liveDot.setAttribute('aria-hidden', 'true');
+      const label = query
+        ? `Found ${visibleCount} ${visibleCount === 1 ? 'project' : 'projects'} for “${query}”`
+        : `Showing ${visibleCount} ${visibleCount === 1 ? 'project' : 'projects'} · ${categoryLabel}`;
+      projectResults.replaceChildren(liveDot, document.createTextNode(` ${label}`));
+    }
+    if (projectEmpty) projectEmpty.hidden = visibleCount > 0;
+  }
+
   filterButtons.forEach(button => {
     button.addEventListener('click', () => {
-      const filter = button.dataset.filter || 'all';
+      activeProjectFilter = button.dataset.filter || 'all';
       filterButtons.forEach(item => {
         const active = item === button;
         item.classList.toggle('active', active);
         item.setAttribute('aria-pressed', String(active));
       });
-      projectCards.forEach(card => {
-        const show = filter === 'all' || card.dataset.category === filter;
-        card.hidden = !show;
-        if (show && !prefersReducedMotion) {
-          card.classList.remove('is-visible');
-          requestAnimationFrame(() => card.classList.add('is-visible'));
-        }
-      });
+      applyProjectFilters();
     });
   });
+  projectSearch?.addEventListener('input', applyProjectFilters);
+  applyProjectFilters();
 
   // Case study modal copy is intentionally descriptive and avoids claiming unverified results.
   const projects = {
@@ -186,14 +218,6 @@
       bullets: ['Record loan balances and interest rates.', 'Organize due dates, repayment schedules, and payment history.', 'Use a dashboard to summarise outstanding balances and upcoming payments.', 'Designed around a Python and Flask backend with a MySQL database.'],
       tags: ['Python', 'Flask', 'MySQL', 'SQL', 'HTML5', 'CSS3', 'JavaScript'],
       note: 'The image is an illustrative dashboard mockup; displayed amounts and dates are sample UI content, not real financial data.'
-    },
-    resume: {
-      title: 'AI Resume Analyzer', category: 'AI / NLP', status: 'Portfolio project',
-      image: 'assets/images/resume-analyzer.svg', imageAlt: 'Illustrative AI resume matching dashboard concept',
-      description: 'A Python-based resume-analysis project designed to compare resume text with a target job description and present a readable skill-gap summary.',
-      bullets: ['Extract or review resume and job-description text.', 'Identify relevant skills and keywords for comparison.', 'Present a match summary to guide resume improvements.', 'Use Python, natural-language processing ideas, and a database for storing records if required.'],
-      tags: ['Python', 'NLP', 'MySQL', 'Text processing'],
-      note: 'The interface image uses illustrative scores and example keywords; it is not a claim of measured matching accuracy.'
     },
     portfolio: {
       title: 'Personal Portfolio Website', category: 'Frontend / Web development', status: 'Current website',

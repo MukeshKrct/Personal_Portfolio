@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#92A8D1">
+  <title>Page not found — Mukesh S</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .not-found-wrap{min-height:100vh;display:grid;place-items:center;padding:28px 0;background:radial-gradient(circle at 80% 12%,rgba(146,168,209,.25),transparent 34%),var(--paper)}
+    .not-found-card{width:min(650px,calc(100% - 36px));padding:clamp(28px,6vw,58px);border:1px solid var(--line);border-radius:28px;background:var(--surface);box-shadow:var(--shadow);text-align:center}
+    .not-found-number{margin:0;color:var(--accent-strong);font-family:"DM Mono",monospace;font-size:clamp(70px,18vw,130px);font-weight:500;line-height:1;letter-spacing:-.08em}
+    .not-found-card h1{margin:18px 0 12px;font-size:clamp(26px,5vw,38px);line-height:1.15;letter-spacing:-1.3px}
+    .not-found-card p{max-width:440px;margin:0 auto 24px;color:var(--muted);font-size:14px;line-height:1.8}
+    .not-found-actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+  </style>
+</head>
+<body>
+  <main class="not-found-wrap">
+    <section class="not-found-card" aria-labelledby="not-found-title">
+      <a class="brand" href="index.html" aria-label="Return to Mukesh S portfolio home"><span class="brand-mark">M<span>.</span></span><span class="brand-text"><strong>Mukesh S</strong><small>Developer Portfolio</small></span></a>
+      <p class="not-found-number">404</p>
+      <h1 id="not-found-title">This page took a wrong turn.</h1>
+      <p>The page may have moved or the link may be incorrect. Return to the portfolio homepage to explore projects, skills, and contact details.</p>
+      <div class="not-found-actions"><a class="button button-primary button-large" href="index.html">Back to portfolio ↗</a><a class="button button-secondary button-large" href="https://github.com/MukeshKrct" target="_blank" rel="noopener noreferrer">Visit GitHub</a></div>
+    </section>
+  </main>
+</body>
+</html>
